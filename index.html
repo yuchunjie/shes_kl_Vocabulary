@@ -15,7 +15,7 @@ h1{margin:0 0 8px;font-size:1.15rem}
 .seg button[aria-pressed=true]{background:var(--ac);font-weight:700}
 .tg{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
 select,input[type=search]{padding:6px 8px;border-radius:8px;border:1px solid #6f9a86;background:#fff;color:var(--ink)}
-main{max-width:1000px;margin:0 auto;padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+main{max-width:1000px;margin:0 auto;padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
 .card{all:unset;box-sizing:border-box;cursor:pointer;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ac);border-radius:6px;padding:10px 12px;display:block}
 .card:hover{background:var(--ac2)}
 .card:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
@@ -25,6 +25,7 @@ main{max-width:1000px;margin:0 auto;padding:16px;display:grid;grid-template-colu
 .p{color:var(--mute);font-size:.8rem;margin-left:4px;font-weight:400}
 .k{color:var(--ac);font-size:.95rem;min-height:1.4em;font-family:"Noto Sans","Segoe UI",sans-serif}
 .z{font-size:1rem;margin-top:2px}
+.s{margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);font-size:.9rem;line-height:1.4;color:var(--mute);font-family:"Noto Sans","Segoe UI",sans-serif}.s:hover{color:var(--ac)}body.nose .s{display:none}.sz{display:block;margin-top:2px;color:var(--ink)}body.nozh .sz{display:none}
 body.nokk .k{display:none}body.nozh .z{display:none}
 #msg{max-width:1000px;margin:0 auto;padding:0 16px;color:var(--mute);font-size:.85rem}
 .cw{position:relative;display:flex}
@@ -47,11 +48,13 @@ body.nokk .k{display:none}body.nozh .z{display:none}
 <span class="seg" role="group" aria-label="口音"><button id="us" aria-pressed="true">美式</button><button id="uk" aria-pressed="false">英式</button></span>
 <label class="tg"><input type="checkbox" id="zh"> 中文</label>
 <label class="tg"><input type="checkbox" id="kk" checked> KK音標</label>
+<label class="tg"><input type="checkbox" id="se" checked> 例句</label>
 <label>語速 <select id="sp"><option value=".6">慢</option><option value=".85" selected>正常</option><option value="1">快</option></select></label>
 <select id="rg" aria-label="範圍"></select>
 <input type="search" id="q" placeholder="搜尋單字或中文">
 <button class="ex" id="sa">全選目前範圍</button><button class="ex" id="sc">清除選取</button>
 <label class="tg"><input type="checkbox" id="pz" checked> PDF含中文</label>
+<label class="tg"><input type="checkbox" id="ps" checked> PDF含例句</label>
 <button class="ex go" id="pd">匯出PDF（0）</button>
 </div></header>
 <div id="msg"></div>
@@ -258,7 +261,333 @@ express|表達|v|ɪkˈsprɛs
 certainty|確實|n|ˈsɝtntɪ
 possibility|可能性|n|ˌpɑsəˈbɪlətɪ
 solar|太陽的|adj|ˈsolɚ`;
+const SEN=`1-2|A fact is true.
+3|In this photo essay, we look at pictures and read about festivals, celebrations, and fun events around the world.
+4|Children often get money in red paper envelopes.
+5|Families light candles and decorate their homes with flowers.
+6-7|Another popular game is volleyball.
+8-9|People watch their favorite players at the World Cup scooter championships.
+10|The first team to reach a score of 25 is the winner.
+11|Almost every country in the world sends its best athletes to race and play in these games.
+12|When a girl turns 15 years old in Mexico, her family and friends often celebrate with food and dancing.
+13-14|This also happens in many parts of Central and South America.
+15-16|A wedding is always a big celebration.
+17|In Egypt, dancers and musicians gather around the married couple and dance for up to one hour.
+18|People celebrate family reunions all over the world. Aunts, uncles, cousins, and grandparents come together to eat and have fun.
+19-20|Health and Sports Day is an interesting traditional event in Japan.
+21|I was surprised, too, because I'm a very good, fast runner.
+22|In my village, we always have lots of exciting races and games.
+23|My race was very tiring.
+24|I am very surprised. I didn't know that about you.
+25|Their music is very entertaining. I feel very entertained.
+26|It's relaxing to sit in the sun and listen to music. I feel very relaxed.
+27|Losing a game is very disappointing. The children are disappointed when they didn't win.
+28|We were amazed by the magic.
+29|My friends think folk dancing is boring, but I think it is great.
+30|We watch traditional plays on Youth and Sports Day.
+31-32|Carlos kicks his red rubber ball so hard.
+33|Far across the world, Ashanti is playing Da Ga with her friends.
+34|She acts like a snake and tries to tag the next Da Ga.
+35|She bounces the ball as hard as she can.
+36|It flies over a forest, white cliffs, and a blue ocean.
+37|Hyo plays with little dark pebbles.
+38|Hyo is finding the perfect place to put his stone.
+39|It flies far into the sky, over plains and seas.
+40|Matias tosses a stone, and Maria jumps over it.
+41|She lands in the next box without stepping on the line.
+42|She puts her arms out to keep her balance.
+43|The whole family watches as the ball goes up and up until they can't see it anymore.
+44-45|The ball flies over lakes, canyons, and streams.
+46|A popular children's game in Mexico is The Blind Hen.
+47-48|You start by choosing one child to be the hen and covering their eyes so that they can't see.
+49|The next step is covering the child's eyes.
+50|Underline the words ending in -ing.
+51|I prefer playing ball games.
+52|A preview helps you know what will happen next.
+53-54|Moving is hard work.
+55|Mom and I are still unpacking boxes.
+56|She and I were packing them just eight weeks ago.
+57|It's very quiet compared to Mumbai.
+58|The weather in July is warm and sunny.
+59|Meeting neighbors isn't easy for me.
+60|Dad started his new job as a surgeon at the hospital.
+61|I threw snowballs.
+62|Please write soon!
+63|I rake leaves every Saturday in our yard.
+64|Emily is my neighbor and my classmate.
+65|Emily, Ashli, and Rachel are coming over on Sunday to work on our science project.
+66|What is the order of events?
+67|In those days, lots of people could crochet, knit, and sew.
+68|We use "can" and "could" to talk about ability.
+69|My grandma gave me knitting lessons.
+70|Moving from here to there!
+71|People move from rural areas to urban areas, such as cities, to get a job.
+72|Everyday people pack their belongings and move to new places.
+73-75|Maybe they came from a rural area, or from a nearby city or town.
+76|Perhaps they came from another country.
+77|In 1990, about a quarter of the people in China lived in cities.
+78|Today, over half of the Chinese people live in cities.
+79|Immigrants from Europe moved to Brazil to work in factories.
+80|People moved abroad to find new jobs and a better life.
+81|When another city has good services, people want to move there.
+82|For example, families want to live in a city with good hospitals and schools.
+83|Suburbs are near the outside of a city.
+84-85|Suburbs have more space for schools, hospitals, clinics, shopping malls, and zoos.
+86|Some students go to universities in another country.
+87|People often move to find new experiences and a better life.
+88-89|If there are lots of sky lanterns in the sky, it's an amazing sight.
+90|If someone finds a lantern, they sometimes get a secret message.
+91|Is it exciting when there's a big fireworks display?
+92|The following three poets come from two countries.
+93|The river is gold.
+94-95|However, the language they use is the same.
+96|He enjoys writing poetry.
+97|He and his daughter are eating.
+98|A raisin has escaped from the raisin jar.
+99|It is leaping in the air like a kangaroo.
+100-101|His poem "Colour" encourages children to be creative.
+102-103|She was an award-winning poet, writer, and playwright.
+104|Do you like grasshoppers and beetles?
+105|The crickets in the thickets.
+106-108|Butterflies, ladybugs, and bees don't smell with little noses but with feelers.
+109|I wonder how they sneeze.
+110|I get up at night and dress by yellow candle-light.
+111|Do you notice how winter days are short and summer days are long?
+112|Hear the grown-up people's feet still going past me in the street.
+113|And does it not seem hard to you?
+114-115|Use the past continuous to talk about things that were happening at a certain time in the past.
+116|Poets choose words carefully to help readers see a picture in their minds.
+117|They want to share the beauty and joy of life.
+118|A good poet observes things carefully.
+119|Use each letter as the beginning of a new word.
+120|They don't have to be rhyming words.
+121|Her blond hair is glittering under the light.
+122|Tiny snowflakes kiss my nose.
+123|Write a sentence about the topic word.
+124|Haiku poems use an exact number of syllables in each line.
+125|When you describe something, you explain how it looks, sounds, or feels.
+126-128|I was in the park when I saw some actors on a stage. They were performing a play when I saw them.
+129-130|He tried to call the ambulance when his cell phone battery ran out.
+131-132|Notice their labels and titles.
+133|We learn how the movement of Earth helps us tell time.
+134|The Earth turns, or spins, on an imaginary line called axis.
+135|The time it takes for the Earth to make one complete turn is called a day.
+136-139|A day is divided into hours, minutes, and seconds.
+140|Multiply 24 hours by 60 minutes to get the answer.
+141|The Earth travels around, or orbits, the sun.
+142|The time it takes for the Earth to go around the sun once is called a year.
+143|One year is equal to 12 months, or just over 52 weeks.
+144|To be very accurate, it takes the Earth 365 days, 49 minutes, and 12 seconds to go around the sun.
+145|Each time zone is one hour apart from the next time zone.
+146|Thanks to clocks and calendars, we can measure time very easily.
+147|It is the movement of the Earth that really allows us to measure time.
+148|We will see the highest tides in the world there.
+149|100 billion tons of water will move into the bay.
+150|We'll hunt for fossils in the sand, and we will explore the caves.
+151|What day will it be tomorrow?
+152|The shadows will not be very long in the summer because the sun rises high in the sky in the summer.
+153-154|A solution is how a character fixes the problem.
+155|She packed for her business trip to Japan.
+156|Molly stood beside her with a notebook and a pencil.
+157|Do you have your passport, Mom?
+158|Your destination is Tokyo.
+159|You should be at the airport two hours early.
+160|Remember passengers can only check two bags.
+161|Please take good care of him while I'm gone.
+162|I have a bad earache. I think I'm sick.
+163|Mom put me in charge.
+164|Tokyo is sixteen hours ahead of Los Angeles.
+165|Molly's messages continued through the day.
+166|Now Dad has a headache and a fever.
+167-168|I also put a cold washcloth on his forehead.
+169-170|Dad has a cold now. He's sneezing a lot. I gave him lots of tissues.
+171|The doorbell didn't ring. The phone rang. Molly picked it up.
+172|What are the announcements about?
+173|They are not going to take a lot of luggage because they're going to carry their bags all the time.
+174|The kite, the pinwheel, and the seeds are all moved by wind power.
+175-176|Wind power is a source of energy.
+177-178|Wind turns the blades on a windmill.
+179|We can use wind power to make electricity.
+180|Electricity powers lights and refrigerators.
+181-183|Most of our energy comes from oil, natural gas, and coal. These energy sources are called fossil fuels.
+184|Fossil fuels are made from the remains of things that lived millions of years ago.
+185|A power plant burns coal to make electricity.
+186-187|Wind power is a clean source of energy. It doesn't cause pollution. We will not run out of wind. It is a renewable resource.
+188|Modern windmills called wind turbines make electricity.
+189-191|The tall part is usually hollow and made of metal instead of wood.
+192|Wind may be one important source of energy in the future.
+193|Energy from water and the sun might also help reduce our need for fossil fuels.
+194|A turbine looks different from the old type of windmill.
+195|Electric car might be the answer to this problem.
+196|One day, there may be more alternative energy to power electric cars, too.
+197-198|Which sentence express certainty? Which express uncertainty?
+199|Use may and might to talk about future possibility.
+200|We will put solar panels on our roofs.`;
+const ZH=`1-2|事實是真的。
+3|在這篇圖文短文中，我們欣賞圖片，並閱讀世界各地的節慶、慶祝活動和有趣的活動。
+4|孩子們常常收到紅包袋裡的錢。
+5|家家戶戶點燃蠟燭，並用花朵裝飾家裡。
+6-7|另一種受歡迎的比賽是排球。
+8-9|人們在世界盃滑板車錦標賽上觀看他們最喜愛的選手。
+10|最先得到 25 分的隊伍就是優勝者。
+11|世界上幾乎每個國家都派出最優秀的運動員，來參加這些運動會的賽跑和比賽。
+12|墨西哥的女孩滿 15 歲時，家人和朋友常會用美食和舞蹈來慶祝。
+13-14|這種情形也發生在中美洲和南美洲的許多地方。
+15-16|婚禮總是一場盛大的慶祝。
+17|在埃及，舞者和音樂家聚集在新婚夫妻身邊，跳舞長達一小時。
+18|世界各地的人都會慶祝家族團圓。阿姨、叔叔、堂表兄弟姊妹和祖父母聚在一起吃飯、玩樂。
+19-20|健康運動日是日本一項有趣的傳統活動。
+21|我也很驚訝，因為我是個跑得很快的好跑者。
+22|在我的村莊，我們總是有很多刺激的賽跑和遊戲。
+23|我的比賽讓人非常疲累。
+24|我非常驚訝。我不知道關於你的這件事。
+25|他們的音樂很有娛樂性。我覺得很愉快。
+26|坐在陽光下聽音樂很令人放鬆。我覺得非常輕鬆。
+27|輸掉比賽讓人很失望。孩子們沒贏的時候很失望。
+28|我們對魔術感到驚奇。
+29|我的朋友覺得民俗舞蹈很無聊，但我覺得它很棒。
+30|我們在青年運動日觀賞傳統戲劇。
+31-32|卡洛斯用力踢他的紅色橡膠球。
+33|在遙遠的世界另一端，阿山蒂正和朋友玩 Da Ga。
+34|她表現得像條蛇，試著標記下一個 Da Ga。
+35|她盡全力拍球。
+36|它飛越森林、白色的懸崖和藍色的海洋。
+37|Hyo 玩著小小的深色鵝卵石。
+38|Hyo 正在尋找最完美的地方來放他的石頭。
+39|它飛向遠方的天空，越過平原和海洋。
+40|馬蒂亞斯丟出一顆石頭，瑪麗亞跳過它。
+41|她落在下一格，沒有踩到線。
+42|她把手臂伸出去保持平衡。
+43|全家人看著球越飛越高，直到再也看不見。
+44-45|球飛越湖泊、峽谷和溪流。
+46|墨西哥一個受歡迎的兒童遊戲是「盲眼母雞」。
+47-48|一開始先選一個孩子當母雞，並蒙住他的眼睛，讓他看不見。
+49|下一步是蒙住孩子的眼睛。
+50|在以 -ing 結尾的字下面劃線。
+51|我比較喜歡玩球類遊戲。
+52|預習能幫助你知道接下來會發生什麼事。
+53-54|搬家是件辛苦的事。
+55|媽媽和我還在拆箱子。
+56|才八個星期前，她和我還在打包這些東西。
+57|跟孟買比起來，這裡非常安靜。
+58|七月的天氣溫暖而晴朗。
+59|認識鄰居對我來說不容易。
+60|爸爸在醫院開始了他當外科醫生的新工作。
+61|我丟了雪球。
+62|請儘快寫信給我！
+63|我每個星期六都在院子裡耙落葉。
+64|艾蜜莉是我的鄰居，也是我的同班同學。
+65|艾蜜莉、艾許莉和瑞秋星期天要來我家一起做我們的自然科學專題。
+66|事件的先後順序是什麼？
+67|在那個年代，很多人會鉤織、編織和縫紉。
+68|我們用 "can" 和 "could" 來談論能力。
+69|我奶奶給我上編織課。
+70|從這裡搬到那裡！
+71|人們為了找工作，從鄉村地區搬到都市地區，例如城市。
+72|一般人打包他們的物品，搬到新的地方。
+73-75|也許他們來自鄉村地區，或是來自附近的城市或城鎮。
+76|或許他們來自另一個國家。
+77|1990 年，中國大約有四分之一的人口住在城市。
+78|現在，超過一半的中國人住在城市。
+79|來自歐洲的移民搬到巴西，到工廠工作。
+80|人們搬到國外去尋找新工作和更好的生活。
+81|當另一個城市有良好的服務時，人們就想搬到那裡。
+82|例如，家庭想住在有好醫院和好學校的城市。
+83|郊區靠近城市的外圍。
+84-85|郊區有更多空間可以蓋學校、醫院、診所、購物中心和動物園。
+86|有些學生到另一個國家上大學。
+87|人們常常為了尋找新的經驗和更好的生活而搬家。
+88-89|如果天空中有很多天燈，那是令人驚豔的景象。
+90|如果有人發現天燈，有時會得到一則祕密訊息。
+91|有盛大的煙火表演時，是不是很令人興奮？
+92|接下來這三位詩人來自兩個國家。
+93|這條河是金色的。
+94-95|然而，他們使用的語言是一樣的。
+96|他喜歡寫詩。
+97|他和他的女兒正在吃東西。
+98|一顆葡萄乾從葡萄乾罐子裡逃出來了。
+99|它在空中跳躍，就像袋鼠一樣。
+100-101|他的詩〈Colour〉鼓勵孩子們發揮創意。
+102-103|她是一位得過獎的詩人、作家和劇作家。
+104|你喜歡蚱蜢和甲蟲嗎？
+105|灌木叢裡的蟋蟀。
+106-108|蝴蝶、瓢蟲和蜜蜂靠觸鬚聞氣味，牠們沒有小鼻子。
+109|我好奇它們怎麼打噴嚏。
+110|我在夜裡起床，藉著黃色的燭光穿衣服。
+111|你有沒有注意到冬天的白天很短，夏天的白天很長？
+112|聽見大人們的腳步聲，還在街上從我身旁走過。
+113|你不覺得這很難熬嗎？
+114-115|用過去進行式來談論過去某個特定時間正在發生的事。
+116|詩人謹慎地選擇文字，幫助讀者在腦海中看見畫面。
+117|他們想分享生命的美麗與喜悅。
+118|優秀的詩人會仔細觀察事物。
+119|用每個字母作為一個新單字的開頭。
+120|它們不一定要是押韻的字。
+121|她的金髮在燈光下閃閃發亮。
+122|小小的雪花親吻我的鼻子。
+123|寫一個關於主題字的句子。
+124|俳句的每一行都使用精確數量的音節。
+125|當你描述某樣東西時，你要解釋它看起來、聽起來或感覺起來是什麼樣子。
+126-128|我在公園時，看到一些演員在舞臺上。他們正在演出一齣戲的時候，我看到了他們。
+129-130|他想叫救護車的時候，手機電池剛好沒電了。
+131-132|注意它們的標籤和標題。
+133|我們學習地球的運動如何幫助我們判斷時間。
+134|地球繞著一條叫做地軸的想像線轉動，也就是自轉。
+135|地球轉完一整圈所需的時間叫做一天。
+136-139|一天被分成小時、分鐘和秒。
+140|把 24 小時乘以 60 分鐘，就能得到答案。
+141|地球繞著太陽運行，也就是公轉。
+142|地球繞太陽一圈所需的時間叫做一年。
+143|一年等於 12 個月，或是剛好超過 52 週。
+144|說得非常精確一點，地球繞太陽一圈需要 365 天 49 分又 12 秒。
+145|每個時區和下一個時區相差一小時。
+146|多虧有時鐘和日曆，我們才能很輕鬆地測量時間。
+147|地球的運動讓我們得以測量時間。
+148|我們會在那裡看到世界上最高的潮水。
+149|一千億噸的水將湧進海灣。
+150|我們要在沙地裡尋找化石，也要去探索洞穴。
+151|明天是星期幾？
+152|夏天的影子不會很長，因為夏天太陽在天空中升得很高。
+153-154|解決方法就是故事角色如何解決問題。
+155|她為了去日本出差而打包行李。
+156|茉莉拿著筆記本和鉛筆站在她身旁。
+157|媽媽，你有帶護照嗎？
+158|你的目的地是東京。
+159|你應該提早兩小時到機場。
+160|記住，乘客只能託運兩件行李。
+161|我不在的時候，請好好照顧他。
+162|我的耳朵很痛。我想我生病了。
+163|媽媽讓我負責。
+164|東京比洛杉磯快十六小時。
+165|茉莉的訊息一整天都持續傳來。
+166|現在爸爸頭痛又發燒了。
+167-168|我還把一條冷毛巾放在他的額頭上。
+169-170|爸爸現在感冒了。他一直打噴嚏。我給了他很多衛生紙。
+171|門鈴沒有響。電話響了。茉莉接起了電話。
+172|這些公告是關於什麼的？
+173|他們不打算帶很多行李，因為他們要一直自己提著袋子。
+174|風箏、風車和種子都是靠風力移動的。
+175-176|風力是一種能量的來源。
+177-178|風使風車房的葉片轉動。
+179|我們可以利用風力來發電。
+180|電力供給燈和冰箱。
+181-183|我們大部分的能源來自石油、天然氣和煤。這些能源叫做化石燃料。
+184|化石燃料是由生活在數百萬年前的生物遺骸形成的。
+185|發電廠燒煤來發電。
+186-187|風力是一種乾淨的能源。它不會造成污染。我們不會用光風。它是可再生資源。
+188|稱為風力渦輪機的現代風車能發電。
+189-191|高高的部分通常是中空的，而且是用金屬而不是木頭做的。
+192|風可能是未來一項重要的能源。
+193|來自水和太陽的能源，也可能有助於減少我們對化石燃料的需求。
+194|渦輪機看起來和舊式的風車不一樣。
+195|電動車可能是這個問題的答案。
+196|有一天，可能會有更多替代能源來驅動電動車。
+197-198|哪個句子表達確定？哪個表達不確定？
+199|用 may 和 might 來談論未來的可能性。
+200|我們會把太陽能板裝在屋頂上。`;
 const W=RAW.split("\n").map((l,i)=>{const a=l.split("|");return{n:i+1,w:a[0],z:a[1],p:a[2],k:a[3]}});
+SEN.split("\n").forEach(l=>{const[r,t]=l.split("|"),[a,b]=r.split("-").map(Number);for(let i=a;i<=(b||a);i++)W[i-1].s=t});
+ZH.split("\n").forEach(l=>{const[r,t]=l.split("|"),[a,b]=r.split("-").map(Number);for(let i=a;i<=(b||a);i++)W[i-1].sz=t});
 const $=id=>document.getElementById(id),L=$("list");
 let seq=0,acc="en-US",cur=null,shown=[];const sel=new Set();
 const cnt=()=>$("pd").textContent="匯出PDF（"+sel.size+"）";
@@ -267,7 +596,7 @@ function render(){
  const s=rg.value*1,q=$("q").value.trim().toLowerCase();
  const d=W.filter(x=>(!s||(x.n>=s&&x.n<s+50))&&(!q||x.w.includes(q)||x.z.includes(q)));
  shown=d;
- L.innerHTML=d.map(x=>`<div class="cw"><button class="card" data-w="${x.w}"><span class="n">${x.n}</span><div class="w">${x.w}<span class="p">${x.p}.</span></div><div class="k">/${x.k}/</div><div class="z">${x.z}</div></button><label class="ck" title="加入PDF"><input type="checkbox" data-n="${x.n}" aria-label="選取 ${x.w}"${sel.has(x.n)?" checked":""}></label></div>`).join("")||"<p>找不到符合的單字</p>";
+ L.innerHTML=d.map(x=>`<div class="cw"><button class="card" data-w="${x.w}"><span class="n">${x.n}</span><div class="w">${x.w}<span class="p">${x.p}.</span></div><div class="k">/${x.k}/</div><div class="z">${x.z}</div><div class="s" data-i="${x.n}">🔊 ${x.s}<span class="sz">${x.sz}</span></div></button><label class="ck" title="加入PDF"><input type="checkbox" data-n="${x.n}" aria-label="選取 ${x.w}"${sel.has(x.n)?" checked":""}></label></div>`).join("")||"<p>找不到符合的單字</p>";
  cnt();
 }
 function cands(){
@@ -293,17 +622,18 @@ function say(t,el,k=0,tk=++seq){
   $("msg").textContent=v?"":"找不到"+(acc=="en-US"?"美式":"英式")+"語音，改用裝置預設語音。";
  },60);
 }
-L.addEventListener("click",e=>{const c=e.target.closest(".card");if(!c)return;say(c.dataset.w,c)});
+L.addEventListener("click",e=>{const c=e.target.closest(".card");if(!c)return;const q=e.target.closest(".s");say(q?W[q.dataset.i-1].s:c.dataset.w,c)});
 [["us","en-US"],["uk","en-GB"]].forEach(([id,l])=>$(id).onclick=()=>{acc=l;$("us").setAttribute("aria-pressed",l=="en-US");$("uk").setAttribute("aria-pressed",l=="en-GB")});
 $("zh").onchange=e=>document.body.classList.toggle("nozh",!e.target.checked);
+$("se").onchange=e=>document.body.classList.toggle("nose",!e.target.checked);
 $("kk").onchange=e=>document.body.classList.toggle("nokk",!e.target.checked);
 L.addEventListener("change",e=>{const n=+e.target.dataset.n;if(!n)return;e.target.checked?sel.add(n):sel.delete(n);cnt()});
 $("sa").onclick=()=>{shown.forEach(x=>sel.add(x.n));render()};
 $("sc").onclick=()=>{sel.clear();render()};
 $("pd").onclick=()=>{
  if(!sel.size){$("msg").textContent="請先勾選要匯出的單字，或按「全選目前範圍」。";return}
- const z=$("pz").checked,d=W.filter(x=>sel.has(x.n));
- $("pv").innerHTML=`<h2>G4 Advanced M11/M12 單字複習</h2><p>共 ${d.length} 字</p><table><tr><th>#</th><th>Word</th><th>KK</th><th>詞性</th>${z?"<th>中文</th>":""}</tr>${d.map(x=>`<tr><td>${x.n}</td><td><b>${x.w}</b></td><td class="kk">/${x.k}/</td><td>${x.p}.</td>${z?`<td>${x.z}</td>`:""}</tr>`).join("")}</table>`;
+ const z=$("pz").checked,t=$("ps").checked,d=W.filter(x=>sel.has(x.n));
+ $("pv").innerHTML=`<h2>G4 Advanced M11/M12 單字複習</h2><p>共 ${d.length} 字</p><table><tr><th>#</th><th>Word</th><th>KK</th><th>詞性</th>${z?"<th>中文</th>":""}${t?"<th>Example Sentence</th>":""}</tr>${d.map(x=>`<tr><td>${x.n}</td><td><b>${x.w}</b></td><td class="kk">/${x.k}/</td><td>${x.p}.</td>${z?`<td>${x.z}</td>`:""}${t?`<td>${x.s}${z?`<br>${x.sz}`:""}</td>`:""}</tr>`).join("")}</table>`;
  $("msg").textContent="在列印視窗中，將目的地選為「另存為 PDF」。";
  window.print();
 };
