@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G4 Advanced M11/M12 單字</title>
+<style>
+:root{--bg:#f3f6f4;--card:#fff;--ink:#16302a;--mute:#5d746c;--ac:#2f7d4f;--ac2:#d8ecdf;--line:#cfdcd5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Noto Sans TC",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--ink);color:#fff;padding:12px 16px}
+h1{margin:0 0 8px;font-size:1.15rem}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar label,.bar select,.bar input[type=search]{font-size:.9rem}
+.seg{display:inline-flex;border:1px solid #6f9a86;border-radius:8px;overflow:hidden}
+.seg button{background:transparent;color:#fff;border:0;padding:6px 12px;cursor:pointer;font-size:.9rem}
+.seg button[aria-pressed=true]{background:var(--ac);font-weight:700}
+.tg{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+select,input[type=search]{padding:6px 8px;border-radius:8px;border:1px solid #6f9a86;background:#fff;color:var(--ink)}
+main{max-width:1000px;margin:0 auto;padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.card{all:unset;box-sizing:border-box;cursor:pointer;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ac);border-radius:6px;padding:10px 12px;display:block}
+.card:hover{background:var(--ac2)}
+.card:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.card.on{background:var(--ac2);border-color:var(--ac)}
+.n{float:right;color:var(--mute);font-size:.75rem}
+.w{font-size:1.35rem;font-weight:700}
+.p{color:var(--mute);font-size:.8rem;margin-left:4px;font-weight:400}
+.k{color:var(--ac);font-size:.95rem;min-height:1.4em;font-family:"Noto Sans","Segoe UI",sans-serif}
+.z{font-size:1rem;margin-top:2px}
+body.nokk .k{display:none}body.nozh .z{display:none}
+#msg{max-width:1000px;margin:0 auto;padding:0 16px;color:var(--mute);font-size:.85rem}
+.cw{position:relative;display:flex}
+.cw .card{flex:1;min-width:0;min-height:112px;overflow-wrap:anywhere}
+.ck{position:absolute;right:6px;bottom:6px;padding:6px;cursor:pointer;line-height:0}
+.ck input{width:20px;height:20px;accent-color:var(--ac);cursor:pointer}
+.cw .card{padding-bottom:12px}
+.ex{background:#fff;color:var(--ink);border:0;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:.9rem}
+.ex.go{background:var(--ac);color:#fff;font-weight:700}
+#pv{display:none}
+@media print{header,main,#msg{display:none!important}body{background:#fff}#pv{display:block;padding:0}
+#pv h2{font-size:16pt;margin:0 0 4pt}#pv p{margin:0 0 8pt;color:#555;font-size:9pt}
+#pv table{width:100%;border-collapse:collapse;font-size:11pt}
+#pv th,#pv td{border:1px solid #999;padding:4pt 6pt;text-align:left}
+#pv th{background:#d8ecdf}#pv tr{break-inside:avoid}#pv .kk{font-family:"Noto Sans","Segoe UI",sans-serif}
+@page{margin:14mm}}
+</style></head><body class="nozh">
+<header><h1>G4 Advanced M11/M12 單字（點一下聽發音）</h1>
+<div class="bar">
+<span class="seg" role="group" aria-label="口音"><button id="us" aria-pressed="true">美式</button><button id="uk" aria-pressed="false">英式</button></span>
+<label class="tg"><input type="checkbox" id="zh"> 中文</label>
+<label class="tg"><input type="checkbox" id="kk" checked> KK音標</label>
+<label>語速 <select id="sp"><option value=".6">慢</option><option value=".85" selected>正常</option><option value="1">快</option></select></label>
+<select id="rg" aria-label="範圍"></select>
+<input type="search" id="q" placeholder="搜尋單字或中文">
+<button class="ex" id="sa">全選目前範圍</button><button class="ex" id="sc">清除選取</button>
+<label class="tg"><input type="checkbox" id="pz" checked> PDF含中文</label>
+<button class="ex go" id="pd">匯出PDF（0）</button>
+</div></header>
+<div id="msg"></div>
+<main id="list"></main>
+<div id="pv"></div>
+<script>
+const RAW=`fact|事實|n|fækt
+true|真實的|adj|tru
+essay|短文|n|ˈɛse
+envelope|信封|n|ˈɛnvəˌlop
+light|點燃|v|laɪt
+another|另一的|adj|əˈnʌðɚ
+volleyball|排球|n|ˈvɑlɪˌbɔl
+favorite|最喜愛的|adj|ˈfevərɪt
+championship|錦標賽/冠軍|n|ˈtʃæmpɪənˌʃɪp
+winner|優勝者|n|ˈwɪnɚ
+athlete|運動員|n|ˈæθlit
+turn|轉變成|v|tɝn
+central|中央的|adj|ˈsɛntrəl
+south|南方|n|saʊθ
+wedding|結婚典禮|n|ˈwɛdɪŋ
+celebration|慶祝|n|ˌsɛləˈbreʃən
+gather|聚集|v|ˈɡæðɚ
+reunion|團聚|n|riˈjunjən
+interesting|令人感到有趣的|adj|ˈɪntərɪstɪŋ
+traditional|傳統的|adj|trəˈdɪʃənl
+because|因為|conj|bɪˈkɔz
+village|村莊|n|ˈvɪlɪdʒ
+tiring|令人疲累的|adj|ˈtaɪrɪŋ
+surprised|感到驚訝的|adj|sɚˈpraɪzd
+entertaining|使人得到娛樂的|adj|ˌɛntɚˈtenɪŋ
+relaxing|令人輕鬆的|adj|rɪˈlæksɪŋ
+disappointing|令人失望的|adj|ˌdɪsəˈpɔɪntɪŋ
+amazed|感到驚奇的|adj|əˈmezd
+boring|令人無聊的|adj|ˈbɔrɪŋ
+youth|青春|n|juθ
+kick|踢|v|kɪk
+rubber|橡膠|n|ˈrʌbɚ
+across|橫越|prep|əˈkrɔs
+tag|標出|v|tæɡ
+bounce|拍(球)|v|baʊns
+cliff|懸崖|n|klɪf
+dark|深色的|adj|dɑrk
+stone|石頭|n|ston
+plain|平原|n|plen
+toss|拋/扔|v|tɔs
+land|降落/登陸|v|lænd
+balance|平衡|n|ˈbæləns
+whole|整個的|adj|hol
+canyon|峽谷|n|ˈkænjən
+stream|溪流|n|strim
+blind|盲的|adj|blaɪnd
+choose|選擇|v|tʃuz
+cover|覆蓋|v|ˈkʌvɚ
+step|步驟|n|stɛp
+underline|在…的下面劃線|v|ˌʌndɚˈlaɪn
+prefer|偏好|v|prɪˈfɝ
+preview|預習|n|ˈpriˌvju
+move|搬家|v|muv
+hard|困難的/費力的|adj|hɑrd
+still|仍然|adv|stɪl
+pack|裝(箱)|v|pæk
+compare|比較|v|kəmˈpɛr
+weather|天氣|n|ˈwɛðɚ
+neighbor|鄰居|n|ˈnebɚ
+surgeon|外科醫生|n|ˈsɝdʒən
+snowball|雪球|n|ˈsnoˌbɔl
+please|請|adv|pliz
+rake|把…耙在一起|v|rek
+classmate|同班同學|n|ˈklæsˌmet
+project|計畫|n|ˈprɑdʒɛkt
+event|事件|n|ɪˈvɛnt
+sew|縫製|v|so
+ability|能力|n|əˈbɪlətɪ
+lesson|課程|n|ˈlɛsn
+there|那裡|n|ðɛr
+such as|例如|phr|sʌtʃ æz
+belongings|擁有的物品|n|bəˈlɔŋɪŋz
+maybe|或許|adv|ˈmebi
+area|地區|n|ˈɛrɪə
+nearby|附近的|adj|ˈnɪrˌbaɪ
+perhaps|或許|adv|pɚˈhæps
+quarter|四分之一|n|ˈkwɔrtɚ
+half|一半|n|hæf
+immigrant|移民|n|ˈɪməɡrənt
+abroad|到國外|adv|əˈbrɔd
+service|服務|n|ˈsɝvɪs
+example|例子|n|ɪɡˈzæmpl
+suburb|郊區|n|ˈsʌbɝb
+space|空間|n|spes
+clinic|診所|n|ˈklɪnɪk
+university|大學|n|ˌjunəˈvɝsətɪ
+experience|經驗|n|ɪkˈspɪrɪəns
+lantern|燈籠|n|ˈlæntɚn
+sight|景象|n|saɪt
+secret|祕密的|adj|ˈsikrɪt
+fireworks|煙火|n|ˈfaɪɚˌwɝks
+following|接著的|adj|ˈfɑloɪŋ
+gold|金色的|adj|ɡold
+however|然而|conj|haʊˈɛvɚ
+language|語言|n|ˈlæŋɡwɪdʒ
+poetry|(總稱)詩|n|ˈpoɪtrɪ
+daughter|女兒|n|ˈdɔtɚ
+raisin|葡萄乾|n|ˈrezn
+leap|跳|v|lip
+encourage|鼓勵|v|ɪnˈkɝɪdʒ
+creative|有創造力的|adj|krɪˈetɪv
+award|獎|n|əˈwɔrd
+playwright|劇作家|n|ˈpleˌraɪt
+grasshopper|蚱蜢|n|ˈɡræsˌhɑpɚ
+cricket|蟋蟀|n|ˈkrɪkɪt
+butterfly|蝴蝶|n|ˈbʌtɚˌflaɪ
+ladybug|瓢蟲|n|ˈledɪˌbʌɡ
+feeler|觸鬚|n|ˈfilɚ
+wonder|想知道|v|ˈwʌndɚ
+dress|穿衣|v|drɛs
+notice|注意|v|ˈnotɪs
+past|經過|prep|pæst
+seem|似乎|v|sim
+continuous|連續的|adj|kənˈtɪnjuəs
+certain|特定的|adj|ˈsɝtn
+mind|精神/心|n|maɪnd
+beauty|美麗|n|ˈbjutɪ
+observe|觀察|v|əbˈzɝv
+letter|字母|n|ˈlɛtɚ
+rhyming|押韻的|adj|ˈraɪmɪŋ
+glitter|閃爍|v|ˈɡlɪtɚ
+snowflake|雪花|n|ˈsnoˌflek
+sentence|句子|n|ˈsɛntəns
+syllable|音節|n|ˈsɪləbl
+explain|解釋|v|ɪkˈsplen
+actor|男演員|n|ˈæktɚ
+stage|舞臺|n|stedʒ
+perform|演出|v|pɚˈfɔrm
+ambulance|救護車|n|ˈæmbjələns
+battery|電池|n|ˈbætərɪ
+label|標籤|n|ˈlebl
+title|標題|n|ˈtaɪtl
+movement|移動|n|ˈmuvmənt
+imaginary|想像中的|adj|ɪˈmædʒəˌnɛrɪ
+complete|完整的|adj|kəmˈplit
+divide|劃分|v|dɪˈvaɪd
+hour|小時|n|aʊr
+minute|分鐘|n|ˈmɪnɪt
+second|秒|n|ˈsɛkənd
+multiply|乘|v|ˈmʌltəˌplaɪ
+orbit|繞軌道運行|v|ˈɔrbɪt
+once|一次|adv|wʌns
+equal to|等於|phr|ˈikwəl tu
+accurate|準確的|adj|ˈækjərɪt
+apart|分開的|adj|əˈpɑrt
+calendar|日曆|n|ˈkæləndɚ
+allow|允許|v|əˈlaʊ
+tide|潮汐|n|taɪd
+billion|十億|n|ˈbɪljən
+explore|探索|v|ɪkˈsplɔr
+tomorrow|明天|n|təˈmɔro
+rise|上升|v|raɪz
+solution|解決方法|n|səˈluʃən
+fix|修理|v|fɪks
+business|商業/事業|n|ˈbɪznɪs
+notebook|筆記本|n|ˈnotˌbʊk
+passport|護照|n|ˈpæsˌpɔrt
+destination|目的地|n|ˌdɛstəˈneʃən
+airport|機場|n|ˈɛrˌpɔrt
+check|託運|v|tʃɛk
+while|當…的時候|conj|hwaɪl
+earache|耳痛|n|ˈɪrˌek
+in charge|負責|phr|ɪn tʃɑrdʒ
+ahead of|在…之前|phr|əˈhɛd əv
+continue|繼續|v|kənˈtɪnju
+headache|頭痛|n|ˈhɛdˌek
+washcloth|洗臉毛巾|n|ˈwɔʃˌklɔθ
+forehead|額頭|n|ˈfɔrˌhɛd
+sneeze|打噴嚏|v|sniz
+tissue|衛生紙|n|ˈtɪʃu
+ring|(鈴)響|v|rɪŋ
+announcement|公告|n|əˈnaʊnsmənt
+luggage|行李|n|ˈlʌɡɪdʒ
+power|動力|n|ˈpaʊɚ
+source|來源|n|sɔrs
+energy|能量|n|ˈɛnɚdʒɪ
+blade|葉片狀物|n|bled
+windmill|風車房|n|ˈwɪndˌmɪl
+electricity|電力|n|ɪˌlɛkˈtrɪsətɪ
+refrigerator|冰箱|n|rɪˈfrɪdʒəˌretɚ
+coal|煤|n|kol
+fossil|化石|n|ˈfɑsl
+fuel|燃料|n|ˈfjuəl
+million|百萬|n|ˈmɪljən
+plant|廠房|n|plænt
+pollution|污染|n|pəˈluʃən
+renewable|可再生的|adj|rɪˈnjuəbl
+modern|現代的|adj|ˈmɑdɚn
+hollow|中空的|adj|ˈhɑlo
+metal|金屬|n|ˈmɛtl
+instead of|而不是|phr|ɪnˈstɛd əv
+future|未來|n|ˈfjutʃɚ
+might|可能|aux|maɪt
+type|類型|n|taɪp
+electric|電動的|adj|ɪˈlɛktrɪk
+alternative|替代的|adj|ɔlˈtɝnətɪv
+express|表達|v|ɪkˈsprɛs
+certainty|確實|n|ˈsɝtntɪ
+possibility|可能性|n|ˌpɑsəˈbɪlətɪ
+solar|太陽的|adj|ˈsolɚ`;
+const W=RAW.split("\n").map((l,i)=>{const a=l.split("|");return{n:i+1,w:a[0],z:a[1],p:a[2],k:a[3]}});
+const $=id=>document.getElementById(id),L=$("list");
+let seq=0,acc="en-US",cur=null,shown=[];const sel=new Set();
+const cnt=()=>$("pd").textContent="匯出PDF（"+sel.size+"）";
+const rg=$("rg");rg.innerHTML='<option value="0">全部 1–200</option>'+[0,1,2,3].map(i=>`<option value="${i*50+1}">${i*50+1}–${i*50+50}</option>`).join("");
+function render(){
+ const s=rg.value*1,q=$("q").value.trim().toLowerCase();
+ const d=W.filter(x=>(!s||(x.n>=s&&x.n<s+50))&&(!q||x.w.includes(q)||x.z.includes(q)));
+ shown=d;
+ L.innerHTML=d.map(x=>`<div class="cw"><button class="card" data-w="${x.w}"><span class="n">${x.n}</span><div class="w">${x.w}<span class="p">${x.p}.</span></div><div class="k">/${x.k}/</div><div class="z">${x.z}</div></button><label class="ck" title="加入PDF"><input type="checkbox" data-n="${x.n}" aria-label="選取 ${x.w}"${sel.has(x.n)?" checked":""}></label></div>`).join("")||"<p>找不到符合的單字</p>";
+ cnt();
+}
+function cands(){
+ const m=x=>x.lang.replace("_","-")===acc,v=speechSynthesis.getVoices().filter(m);
+ return [...v.filter(x=>x.localService),...v.filter(x=>!x.localService),null];
+}
+let U=null;
+function say(t,el,k=0,tk=++seq){
+ if(!("speechSynthesis" in window)){$("msg").textContent="這個瀏覽器不支援語音朗讀，請改用 Chrome、Safari 或 Edge（不要在 LINE、FB 內建瀏覽器開）。";return}
+ const ss=speechSynthesis;ss.cancel();ss.resume();
+ if(cur&&cur!==el)cur.classList.remove("on");cur=el;el.classList.add("on");
+ setTimeout(()=>{
+  if(tk!==seq)return;
+  const c=cands(),v=c[Math.min(k,c.length-1)],u=new SpeechSynthesisUtterance(t);U=u;
+  u.lang=acc;if(v)u.voice=v;u.rate=+$("sp").value;u.volume=1;
+  u.onend=()=>{if(tk===seq)el.classList.remove("on")};
+  u.onerror=e=>{
+   if(e.error==="canceled"||e.error==="interrupted"||tk!==seq)return;
+   if(k<c.length-1){say(t,el,k+1,tk);return}
+   el.classList.remove("on");$("msg").textContent="語音播放失敗（"+e.error+"）。請確認音量未靜音，並到系統設定安裝英文語音。";
+  };
+  ss.speak(u);
+  $("msg").textContent=v?"":"找不到"+(acc=="en-US"?"美式":"英式")+"語音，改用裝置預設語音。";
+ },60);
+}
+L.addEventListener("click",e=>{const c=e.target.closest(".card");if(!c)return;say(c.dataset.w,c)});
+[["us","en-US"],["uk","en-GB"]].forEach(([id,l])=>$(id).onclick=()=>{acc=l;$("us").setAttribute("aria-pressed",l=="en-US");$("uk").setAttribute("aria-pressed",l=="en-GB")});
+$("zh").onchange=e=>document.body.classList.toggle("nozh",!e.target.checked);
+$("kk").onchange=e=>document.body.classList.toggle("nokk",!e.target.checked);
+L.addEventListener("change",e=>{const n=+e.target.dataset.n;if(!n)return;e.target.checked?sel.add(n):sel.delete(n);cnt()});
+$("sa").onclick=()=>{shown.forEach(x=>sel.add(x.n));render()};
+$("sc").onclick=()=>{sel.clear();render()};
+$("pd").onclick=()=>{
+ if(!sel.size){$("msg").textContent="請先勾選要匯出的單字，或按「全選目前範圍」。";return}
+ const z=$("pz").checked,d=W.filter(x=>sel.has(x.n));
+ $("pv").innerHTML=`<h2>G4 Advanced M11/M12 單字複習</h2><p>共 ${d.length} 字</p><table><tr><th>#</th><th>Word</th><th>KK</th><th>詞性</th>${z?"<th>中文</th>":""}</tr>${d.map(x=>`<tr><td>${x.n}</td><td><b>${x.w}</b></td><td class="kk">/${x.k}/</td><td>${x.p}.</td>${z?`<td>${x.z}</td>`:""}</tr>`).join("")}</table>`;
+ $("msg").textContent="在列印視窗中，將目的地選為「另存為 PDF」。";
+ window.print();
+};
+rg.onchange=render;$("q").oninput=render;
+if("speechSynthesis" in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}
+render();
+</script></body></html>
