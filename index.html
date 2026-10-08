@@ -14,7 +14,7 @@ h1{margin:0 0 8px;font-size:1.15rem}
 .seg button{background:transparent;color:#fff;border:0;padding:6px 12px;cursor:pointer;font-size:.9rem}
 .seg button[aria-pressed=true]{background:var(--ac);font-weight:700}
 .tg{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
-select,input[type=search]{padding:6px 8px;border-radius:8px;border:1px solid #6f9a86;background:#fff;color:var(--ink)}
+select,input[type=search],input[type=number]{padding:6px 8px;border-radius:8px;border:1px solid #6f9a86;background:#fff;color:var(--ink)}
 main{max-width:1000px;margin:0 auto;padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
 .card{all:unset;box-sizing:border-box;cursor:pointer;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--ac);border-radius:6px;padding:10px 12px;display:block}
 .card:hover{background:var(--ac2)}
@@ -52,7 +52,8 @@ body.nokk .k{display:none}body.nozh .z{display:none}
 <label>語速 <select id="sp"><option value=".6">慢</option><option value=".85" selected>正常</option><option value="1">快</option></select></label>
 <select id="rg" aria-label="範圍"></select>
 <input type="search" id="q" placeholder="搜尋單字或中文">
-<button class="ex" id="sa">全選目前範圍</button><button class="ex" id="sc">清除選取</button>
+<button class="ex" id="sa">全選目前範圍</button><button class="ex" id="sall">全選 1–200</button><button class="ex" id="sc">清除選取</button>
+<span class="tg">自訂範圍 <input type="number" id="ra" min="1" max="200" placeholder="起" aria-label="起始編號" style="width:70px"> 到 <input type="number" id="rb" min="1" max="200" placeholder="迄" aria-label="結束編號" style="width:70px"><button class="ex" id="radd">加入選取</button><button class="ex" id="rdel">取消選取</button></span>
 <label class="tg"><input type="checkbox" id="pz" checked> PDF含中文</label>
 <label class="tg"><input type="checkbox" id="ps" checked> PDF含例句</label>
 <button class="ex go" id="pd">匯出PDF（0）</button>
@@ -629,6 +630,18 @@ $("se").onchange=e=>document.body.classList.toggle("nose",!e.target.checked);
 $("kk").onchange=e=>document.body.classList.toggle("nokk",!e.target.checked);
 L.addEventListener("change",e=>{const n=+e.target.dataset.n;if(!n)return;e.target.checked?sel.add(n):sel.delete(n);cnt()});
 $("sa").onclick=()=>{shown.forEach(x=>sel.add(x.n));render()};
+$("sall").onclick=()=>{W.forEach(x=>sel.add(x.n));render();$("msg").textContent="已全選 200 字。"};
+function rng(add){
+ let a=parseInt($("ra").value),b=parseInt($("rb").value);
+ if(isNaN(a)&&isNaN(b)){$("msg").textContent="請輸入起始與結束編號，例如 51 到 80。";return}
+ if(isNaN(a))a=b;if(isNaN(b))b=a;
+ if(a>b)[a,b]=[b,a];a=Math.max(1,a);b=Math.min(200,b);
+ let c=0;for(let i=a;i<=b;i++){if(add&&!sel.has(i)){sel.add(i);c++}if(!add&&sel.has(i)){sel.delete(i);c++}}
+ if(add){rg.value="0";$("q").value=""}
+ render();
+ $("msg").textContent=(add?"已加入 ":"已取消 ")+c+" 字（"+a+"–"+b+"），目前共選 "+sel.size+" 字。";
+}
+$("radd").onclick=()=>rng(true);$("rdel").onclick=()=>rng(false);
 $("sc").onclick=()=>{sel.clear();render()};
 $("pd").onclick=()=>{
  if(!sel.size){$("msg").textContent="請先勾選要匯出的單字，或按「全選目前範圍」。";return}
