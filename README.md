@@ -1,6 +1,9 @@
 # G4 Advanced M11/M12 英文單字複習互動工具
 
-專為小學四年級（G4 Advanced）M11 與 M12 單元打造的單字複習 Web 應用程式。本專案以零依賴的單一靜態 HTML 檔設計，支援本機離線開啟或部署至靜態網站（如 GitHub Pages）。
+專為小學四年級（G4 Advanced）M11 與 M12 單元打造的單字複習 Web 應用程式。
+
+- 線上體驗網址：[https://yuchunjie.github.io/shes_kl_Vocabulary/](https://yuchunjie.github.io/shes_kl_Vocabulary/)
+- 最佳體驗建議：請優先使用 **Google Chrome** 瀏覽器開啟，以確保 Web Speech 語音引擎具備最完整的發音支援。
 
 ```mermaid
 flowchart TD
@@ -54,12 +57,18 @@ flowchart TD
 
 ---
 
-## 快速使用
+## 使用方式
 
-本專案無需任何建置環境或安裝套件：
+本專案為純前端單一靜態網頁設計，零依賴即可運作：
 
-1. 下載或複製本專案的 `index.html`。
-2. 以現代瀏覽器（Google Chrome、Microsoft Edge、Apple Safari）直接點擊開啟。
-3. 開始朗讀練習或勾選匯出學習單。
+### 1. 線上直接使用
+直接以 **Google Chrome** 開啟線上站點：
+👉 [https://yuchunjie.github.io/shes_kl_Vocabulary/](https://yuchunjie.github.io/shes_kl_Vocabulary/)
 
-> **注意**：語音功能依賴瀏覽器系統之語音引擎，請確保系統音量開啟且非處於通訊軟體內建瀏覽器環境（如 LINE 或 FB 內嵌瀏覽器）。
+### 2. 本機離線開啟
+1. 下載本專案的 [index.html](file:///c:/Users/93052403/Downloads/shes_kl_Vocabulary/index.html)。
+2. 使用 **Google Chrome** 點擊兩下直接開啟即可使用。
+
+> 💡 **瀏覽器與發音小提醒**：
+> - 強烈建議使用 **Google Chrome**（Windows / macOS / Android / Chromebook 皆支援）。
+> - 若使用手機或平板，請避免於 LINE 或 Facebook 內嵌瀏覽器直接點開，請點選右上角選單並選擇「在 Chrome 開啟」，以確保語音發音與列印功能正常運作。
