@@ -3,7 +3,7 @@
 專為小學四年級（G4 Advanced）M11 與 M12 單元打造的單字複習 Web 應用程式。
 
 - 線上體驗網址：[https://yuchunjie.github.io/shes_kl_Vocabulary/](https://yuchunjie.github.io/shes_kl_Vocabulary/)
-- 最佳體驗建議：請優先使用 **Google Chrome** 瀏覽器開啟。發音優先播放內嵌真人錄音（`audio.js` 非同步載入），缺漏時自動改用 Web Speech 語音引擎補足。
+- 最佳體驗建議：請優先使用 **Google Chrome** 瀏覽器開啟。發音優先播放預錄真人錄音（依口音×內容拆成 4 包非同步按需載入），缺漏時自動改用 Web Speech 語音引擎補足。
 
 ```mermaid
 flowchart TD
@@ -16,7 +16,7 @@ flowchart TD
 
     subgraph Core["核心資料與邏輯引擎"]
         VocabData["單字資料集 (200組字彙 + 詞性 + KK音標 + 例句與中譯)"]
-        AudioPkg["預錄真人語音包 (audio.js：美式362 + 英式362，非同步載入)"]
+        AudioPkg["預錄真人語音包 (美式362 + 英式362，拆成單字/例句4包按需載入)"]
         TTS["Web Speech API (語音合成引擎，缺漏時自動 fallback)"]
         PDFEngine["直接產生 PDF (html2canvas + jsPDF，失敗時改用列印)"]
     end
@@ -42,7 +42,7 @@ flowchart TD
 ## 核心功能特色
 
 1. **預錄真人語音優先、TTS 自動補足**
-   - 內嵌預錄 MP3 語音包（`audio.js`：美式 362 + 英式 362），`index.html` 僅 38KB 先秒速首屏，語音包非同步背景載入（不再白畫面）。
+   - 預錄 MP3 語音包依口音×內容拆成 4 包（`us-words.js`/`us-sents.js`/`uk-words.js`/`uk-sents.js`，單字包約 1.5MB、例句包約 2.6MB）：首屏只載入目前口音的單字包（`index.html` 僅約 39KB 秒開），例句包缺時按需載入（並於閒置時自動預載目前口音的例句包）、另一口音切換時才載入，載入中先用 TTS 頂上（不再白畫面）。
    - `say()` 先試 `playClip()` 播預錄音，缺漏或播放失敗（`AUDFAIL` 快取）才改用瀏覽器原生 Web Speech API。
    - 支援美式英語（en-US）與英式英語（en-GB）切換。
    - 支援三段式語速調節（慢速 0.6x、正常 0.85x、快速 1.0x），預錄音與 TTS 皆吃同一語速設定。
@@ -64,14 +64,14 @@ flowchart TD
 
 ## 使用方式
 
-本專案為純前端靜態網頁（`index.html` 約 38KB + `audio.js` 語音包約 8.4MB），PDF 功能依賴 CDN（html2canvas、jsPDF），需連網使用：
+本專案為純前端靜態網頁（`index.html` 約 39KB + 語音包 4 個檔案共約 8.4MB），PDF 功能依賴 CDN（html2canvas、jsPDF），需連網使用：
 
 ### 1. 線上直接使用
 直接以 **Google Chrome** 開啟線上站點：
 👉 [https://yuchunjie.github.io/shes_kl_Vocabulary/](https://yuchunjie.github.io/shes_kl_Vocabulary/)
 
 ### 2. 本機離線開啟（需連網載入 CDN）
-1. 下載本專案的 `index.html` 與 `audio.js`，放在**同一個資料夾**（缺 `audio.js` 時仍可開啟，發音自動改用 TTS）。
+1. 下載本專案的 `index.html` 與 4 個語音包（`us-words.js`、`us-sents.js`、`uk-words.js`、`uk-sents.js`），放在**同一個資料夾**（缺語音包時仍可開啟，發音自動改用 TTS）。
 2. 使用 **Google Chrome** 點擊兩下開啟 `index.html` 即可使用。
 
 > 💡 **瀏覽器與發音小提醒**：

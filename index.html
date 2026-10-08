@@ -71,14 +71,41 @@ body.nokk .k{display:none}body.nozh .z{display:none}
 <div id="pv"></div>
 
 <script>
-/* 語音包改為外部 audio.js 非同步載入，避免 8MB 阻塞首屏白畫面 */
-window.AUD={};window.AUD_READY=false;
+/* 語音包改為外部 us-words.js/us-sents.js/uk-words.js/uk-sents.js 依口音與內容非同步載入 */
+window.AUD={};window.AUD_READY={};
 const AUDFAIL=new Set();let A=null;
 try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
+function audioKind(t){return (t||"").includes(" ")?"sents":"words"}
+function audioFileFor(a,t){
+ const k=(a||(typeof acc!=="undefined"?acc:"en-US"))==="en-GB"?"uk":"us";
+ return k+"-"+audioKind(t)+".js";
+}
+function loadAudio(t){
+ const f=t?audioFileFor(undefined,t):audioFileFor();
+ if(document.querySelector('script[data-aud="'+f+'"]'))return;
+ const s=document.createElement("script");
+ s.src=f;s.async=true;s.setAttribute("data-aud",f);
+ s.onload=()=>{window.AUD_READY[f]=true;if(!t)scheduleSentsPrefetch(f)};
+ document.head.appendChild(s);
+}
+function scheduleSentsPrefetch(f){
+ const w=audioFileFor(undefined,"");
+ const s=audioFileFor(undefined,"a b");
+ const target=f===w?s:(f===audioFileFor("en-GB","")?audioFileFor("en-GB","a b"):null);
+ if(!target||document.querySelector('script[data-aud="'+target+'"]'))return;
+ const go=()=>loadAudio("a b");
+ if("requestIdleCallback" in window)requestIdleCallback(go,{timeout:8000});
+ else setTimeout(go,4000);
+}
 function playClip(t,el,tk){
  const AU=window.AUD||{};
- const d=(AU[acc==="en-GB"?"uk":"us"]||{})[t];
- if(!d||AUDFAIL.has(t))return false;
+ const k=acc==="en-GB"?"uk":"us";
+ const d=(AU[k]||{})[t];
+ if(!d){
+  if(!AUDFAIL.has(t)&&!window.AUD_READY[audioFileFor(undefined,t)])loadAudio(t);
+  return false;
+ }
+ if(AUDFAIL.has(t))return false;
  try{speechSynthesis.cancel()}catch(e){}
  if(A){try{A.pause()}catch(e){}}
  if(cur&&cur!==el)cur.classList.remove("on");cur=el;el.classList.add("on");
@@ -88,13 +115,6 @@ function playClip(t,el,tk){
  const p=a.play();
  if(p&&p.catch)p.catch(()=>{AUDFAIL.add(t);say(t,el,0,tk)});
  return true;
-}
-function loadAudio(){
- if(document.querySelector('script[data-aud]'))return;
- const s=document.createElement("script");
- s.src="audio.js";s.async=true;s.setAttribute("data-aud","1");
- s.onload=()=>{window.AUD_READY=true};
- document.head.appendChild(s);
 }
 loadAudio();
 </script>
@@ -662,7 +682,7 @@ function say(t,el,k=0,tk=++seq){
  },60);
 }
 L.addEventListener("click",e=>{const c=e.target.closest(".card");if(!c)return;const q=e.target.closest(".s");say(q?W[q.dataset.i-1].s:c.dataset.w,c)});
-[["us","en-US"],["uk","en-GB"]].forEach(([id,l])=>$(id).onclick=()=>{acc=l;$("us").setAttribute("aria-pressed",l=="en-US");$("uk").setAttribute("aria-pressed",l=="en-GB")});
+[["us","en-US"],["uk","en-GB"]].forEach(([id,l])=>$(id).onclick=()=>{acc=l;loadAudio();$("us").setAttribute("aria-pressed",l=="en-US");$("uk").setAttribute("aria-pressed",l=="en-GB")});
 $("zh").onchange=e=>document.body.classList.toggle("nozh",!e.target.checked);
 $("se").onchange=e=>document.body.classList.toggle("nose",!e.target.checked);
 $("kk").onchange=e=>document.body.classList.toggle("nokk",!e.target.checked);
