@@ -3,7 +3,7 @@
 專為小學四年級（G4 Advanced）M11 與 M12 單元打造的單字複習 Web 應用程式。
 
 - 線上體驗網址：[https://yuchunjie.github.io/shes_kl_Vocabulary/](https://yuchunjie.github.io/shes_kl_Vocabulary/)
-- 最佳體驗建議：請優先使用 **Google Chrome** 瀏覽器開啟。發音優先播放預錄真人錄音（依口音×內容拆成 4 包非同步按需載入），缺漏時自動改用 Web Speech 語音引擎補足。
+- 最佳體驗建議：請優先使用 **Google Chrome** 瀏覽器開啟。發音優先播放預錄真人錄音（單字整包載入、例句點到才逐句動態載入），缺漏或載入中自動改用 Web Speech 語音引擎補足。
 
 ```mermaid
 flowchart TD
@@ -16,7 +16,7 @@ flowchart TD
 
     subgraph Core["核心資料與邏輯引擎"]
         VocabData["單字資料集 (200組字彙 + 詞性 + KK音標 + 例句與中譯)"]
-        AudioPkg["預錄真人語音包 (美式362 + 英式362，拆成單字/例句4包按需載入)"]
+        AudioPkg["預錄真人語音包 (美式200單字包 + 英式200單字包 + 324句動態MP3)"]
         TTS["Web Speech API (語音合成引擎，缺漏時自動 fallback)"]
         PDFEngine["直接產生 PDF (html2canvas + jsPDF，失敗時改用列印)"]
     end
@@ -42,7 +42,7 @@ flowchart TD
 ## 核心功能特色
 
 1. **預錄真人語音優先、TTS 自動補足**
-   - 預錄 MP3 語音包依口音×內容拆成 4 包（`us-words.js`/`us-sents.js`/`uk-words.js`/`uk-sents.js`，單字包約 1.5MB、例句包約 2.6MB）：首屏只載入目前口音的單字包（`index.html` 僅約 39KB 秒開），例句包缺時按需載入（並於閒置時自動預載目前口音的例句包）、另一口音切換時才載入，載入中先用 TTS 頂上（不再白畫面）。
+   - 預錄 MP3 語音包分兩層：單字（含 5 個片語如 `such as`，200 條）依口音整包載入（`us-words.js`/`uk-words.js`，各約 1.6MB），`index.html` 僅約 39KB 先秒速首屏（不再白畫面）；例句 162 句×2 口音共 324 個 MP3（`audio/us|uk/sNNN.mp3`，平均約 16KB）由 `sents-index.js`（約 20KB）索引，點到才 `fetch` 動態載入並記憶體快取——第一次點先用 TTS 頂上，第二次起播預錄音。
    - `say()` 先試 `playClip()` 播預錄音，缺漏或播放失敗（`AUDFAIL` 快取）才改用瀏覽器原生 Web Speech API。
    - 支援美式英語（en-US）與英式英語（en-GB）切換。
    - 支援三段式語速調節（慢速 0.6x、正常 0.85x、快速 1.0x），預錄音與 TTS 皆吃同一語速設定。
@@ -53,7 +53,7 @@ flowchart TD
    - **全選 1–200**：一鍵選取全部單字，不受目前篩選影響。
    - **自訂範圍**：輸入起迄編號（如 51 到 80），可「加入選取」或「取消選取」，附選取數量狀態回饋。
    - **即時搜尋**：輸入英文字母或中文關鍵字即時動態過濾。
-   - **視覺遮罩開關**：可自由開啟或隱藏「中文解釋」、「KK音標」、「例句」，方便學生自測記憶。
+   - **視覺遮罩開關**：可自由開啟或隱藏「中文解釋」、「KK音標」、「例句」（中文與例句預設隱藏，方便學生自測記憶）。
 
 3. **直接產生 PDF（免列印對話框）**
    - 勾選欲複習之單字（支援全選目前篩選範圍、全選 1–200、自訂範圍、一鍵清除）。
@@ -64,14 +64,14 @@ flowchart TD
 
 ## 使用方式
 
-本專案為純前端靜態網頁（`index.html` 約 39KB + 語音包 4 個檔案共約 8.4MB），PDF 功能依賴 CDN（html2canvas、jsPDF），需連網使用：
+本專案為純前端靜態網頁（`index.html` 約 39KB + 單字包 2 個約 1.6MB/個 + 例句 324 個 MP3 共約 5.4MB + 索引約 20KB），PDF 功能依賴 CDN（html2canvas、jsPDF），需連網使用：
 
 ### 1. 線上直接使用
 直接以 **Google Chrome** 開啟線上站點：
 👉 [https://yuchunjie.github.io/shes_kl_Vocabulary/](https://yuchunjie.github.io/shes_kl_Vocabulary/)
 
 ### 2. 本機離線開啟（需連網載入 CDN）
-1. 下載本專案的 `index.html` 與 4 個語音包（`us-words.js`、`us-sents.js`、`uk-words.js`、`uk-sents.js`），放在**同一個資料夾**（缺語音包時仍可開啟，發音自動改用 TTS）。
+1. 下載本專案的 `index.html`、`us-words.js`、`uk-words.js`、`sents-index.js` 與 `audio/` 資料夾（含 324 個例句 MP3），保持相對路徑放在一起（缺檔時仍可開啟，缺的部分自動改用 TTS）。
 2. 使用 **Google Chrome** 點擊兩下開啟 `index.html` 即可使用。
 
 > 💡 **瀏覽器與發音小提醒**：
