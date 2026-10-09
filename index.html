@@ -74,20 +74,23 @@ body.nokk .k{display:none}body.nozh .z{display:none}
 /* 語音包：單字整包 (us-words.js/uk-words.js) + 例句逐句動態載入 (audio/us|uk/sNNN.mp3) */
 window.AUD={};window.AUD_READY={};
 const AUDFAIL=new Set();let A=null;
+let curText=null,playing=false;
 const SENT_CACHE=new Map(),SENT_FETCHING=new Set();
 try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}
 function hookAudio(a,el,tk,t){
  try{a.playbackRate=+$("sp").value||1}catch(e){}
- a.onended=()=>{if(tk===seq)el.classList.remove("on")};
+ curText=t;playing=true;A=a;
+ a.onended=()=>{if(tk===seq){el.classList.remove("on");if(curText===t){playing=false;A=null}}};
+ a.onerror=()=>{if(tk===seq&&curText===t){playing=false;A=null}};
  const p=a.play();
- if(p&&p.catch)p.catch(()=>{AUDFAIL.add(t);say(t,el,0,tk)});
+ if(p&&p.catch)p.catch(()=>{if(tk!==seq)return;AUDFAIL.add(t);playing=false;A=null;say(t,el,0,tk)});
 }
 function playClip(t,el,tk){
  const AU=window.AUD||{};
  const k=acc==="en-GB"?"uk":"us";
  const d=(AU[k]||{})[t];
  try{speechSynthesis.cancel()}catch(e){}
- if(A){try{A.pause()}catch(e){}}
+ if(A){try{A.pause()}catch(e){}A=null}
  if(cur&&cur!==el)cur.classList.remove("on");cur=el;el.classList.add("on");
  if(d&&!AUDFAIL.has(t)){hookAudio(new Audio("data:audio/mpeg;base64,"+d),el,tk,t);return true}
  if(AUDFAIL.has(t))return false;
@@ -667,20 +670,26 @@ function cands(){
  return [...v.filter(x=>x.localService),...v.filter(x=>!x.localService),null];
 }
 let U=null;
-function say(t,el,k=0,tk=++seq){
+function say(t,el,k=0,tk){
+ if(tk===undefined){
+  if(playing&&t===curText)return;
+  tk=++seq;
+  curText=t;playing=true;
+ }
  if(playClip(t,el,tk))return;
- if(!("speechSynthesis" in window)){$("msg").textContent="這個瀏覽器不支援語音朗讀，請改用 Chrome、Safari 或 Edge（不要在 LINE、FB 內建瀏覽器開）。";return}
+ if(!("speechSynthesis" in window)){playing=false;$("msg").textContent="這個瀏覽器不支援語音朗讀，請改用 Chrome、Safari 或 Edge（不要在 LINE、FB 內建瀏覽器開）。";return}
  const ss=speechSynthesis;ss.cancel();ss.resume();
  if(cur&&cur!==el)cur.classList.remove("on");cur=el;el.classList.add("on");
  setTimeout(()=>{
   if(tk!==seq)return;
+  curText=t;playing=true;
   const c=cands(),v=c[Math.min(k,c.length-1)],u=new SpeechSynthesisUtterance(t);U=u;
   u.lang=acc;if(v)u.voice=v;u.rate=+$("sp").value;u.volume=1;
-  u.onend=()=>{if(tk===seq)el.classList.remove("on")};
+  u.onend=()=>{if(tk===seq){el.classList.remove("on");if(curText===t)playing=false}};
   u.onerror=e=>{
    if(e.error==="canceled"||e.error==="interrupted"||tk!==seq)return;
    if(k<c.length-1){say(t,el,k+1,tk);return}
-   el.classList.remove("on");$("msg").textContent="語音播放失敗（"+e.error+"）。請確認音量未靜音，並到系統設定安裝英文語音。";
+   el.classList.remove("on");if(curText===t)playing=false;$("msg").textContent="語音播放失敗（"+e.error+"）。請確認音量未靜音，並到系統設定安裝英文語音。";
   };
   ss.speak(u);
   $("msg").textContent=v?"":"找不到"+(acc=="en-US"?"美式":"英式")+"語音，改用裝置預設語音。";
